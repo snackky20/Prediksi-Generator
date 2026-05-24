@@ -17,10 +17,7 @@
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100vh; line-height:1.5; }
-  body::after {
-    content:''; position:fixed; inset:0;
-    pointer-events:none; z-index:0;
-  }
+  body::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:0; }
   .wrap, header { position:relative; z-index:1; }
   #matrixCanvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; opacity:0.18; pointer-events:none; }
   header {
@@ -57,22 +54,17 @@
   .btn-ghost { background:transparent; }
   .btn-gold { background:var(--gold); border-color:var(--gold); color:#000; }
   .btn-gold:hover { background:#d4a017; border-color:#d4a017; color:#000; }
-
   .output-box {
     background:var(--bg); border:1px solid var(--border); font-family:var(--mono);
     font-size:11.5px; line-height:2; padding:18px; min-height:220px;
     color:var(--text); white-space:pre-wrap; letter-spacing:0.03em;
   }
-
   .output-actions { display:flex; gap:8px; padding:10px 16px; border-top:1px solid var(--border); background:var(--surface2); }
-
   #toast { position:fixed; bottom:24px; right:24px; background:var(--accent); color:#000; font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:0.1em; padding:10px 20px; text-transform:uppercase; transform:translateY(80px); opacity:0; transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1); z-index:9999; pointer-events:none; }
   #toast.show { transform:translateY(0); opacity:1; }
   ::-webkit-scrollbar { width:4px; height:4px; }
   ::-webkit-scrollbar-track { background:var(--bg); }
   ::-webkit-scrollbar-thumb { background:var(--border-bright); }
-
-  /* CUSTOM LOGO DROPDOWN */
   .logo-select-wrap { position:relative; display:inline-block; }
   .logo-selected {
     display:inline-flex; align-items:center;
@@ -83,10 +75,7 @@
   }
   .logo-selected:hover { border-color:var(--border-bright); }
   .logo-selected.open { border-color:var(--accent); }
-  .logo-selected::after {
-    content:'▾'; position:absolute; right:4px; top:50%;
-    transform:translateY(-50%); font-size:8px; color:var(--text-muted);
-  }
+  .logo-selected::after { content:'▾'; position:absolute; right:4px; top:50%; transform:translateY(-50%); font-size:8px; color:var(--text-muted); }
   .logo-selected img { height:26px; object-fit:contain; display:block; }
   .logo-dropdown {
     position:absolute; top:calc(100% + 2px); left:0; z-index:1000;
@@ -105,29 +94,18 @@
   .logo-option:hover { background:var(--surface2); }
   .logo-option.active { background:var(--accent-dim); }
   .logo-option img { height:26px; object-fit:contain; display:block; }
-  .logo-group-label {
-    font-family:var(--mono); font-size:9px; font-weight:700;
-    letter-spacing:0.15em; color:var(--text-dim); text-transform:uppercase;
-    padding:6px 12px 3px; border-bottom:1px solid var(--border);
-    background:var(--surface2);
-  }
-
 </style>
 </head>
 <body>
-
 <canvas id="matrixCanvas"></canvas>
 <header>
   <div class="logo">Generator Prediksi</div>
   <div class="header-right">
     <div class="status-dot"></div>
-    <div class="ver-badge">v22.0</div>
+    <div class="ver-badge">v22.1-MOD</div>
   </div>
 </header>
-
 <div class="wrap">
-
-  <!-- CONFIG -->
   <div class="panel">
     <div class="panel-header"><div class="panel-label">Konfigurasi Prediksi</div></div>
     <div class="panel-body">
@@ -157,8 +135,6 @@
       </div>
     </div>
   </div>
-
-  <!-- INPUT -->
   <div class="panel">
     <div class="panel-header"><div class="panel-label">Masukkan Result Kemarin</div></div>
     <div class="panel-body">
@@ -169,36 +145,25 @@
       </div>
     </div>
   </div>
-
-  <!-- OUTPUT MODE SELECTOR -->
   <div class="panel">
     <div class="panel-header"><div class="panel-label">Mode Output</div></div>
     <div class="panel-body">
       <div class="selector-grid" style="gap:10px;">
-
-        <!-- Digit mode -->
         <select id="digitMode" style="width:140px;" onchange="onDigitModeChange()">
           <option value="">— Pilih —</option>
           <option value="6">6 Digit</option>
           <option value="5">5 Digit</option>
         </select>
-
-        <!-- Logo custom dropdown -->
         <div class="logo-select-wrap" id="logoSelectWrap" style="display:none;">
           <div class="logo-selected" id="logoSelected" onclick="toggleLogoDropdown()">
             <img id="logoSelectedImg" src="" style="display:none;">
             <span id="logoSelectedLabel" style="display:none;"></span>
           </div>
-          <div class="logo-dropdown" id="logoDropdown">
-            <!-- populated by JS -->
-          </div>
+          <div class="logo-dropdown" id="logoDropdown"></div>
         </div>
-
       </div>
     </div>
   </div>
-
-  <!-- SINGLE OUTPUT PANEL -->
   <div class="panel" id="outputPanel">
     <div class="panel-header">
       <div class="panel-label" id="outputPanelLabel">Nustoto</div>
@@ -206,11 +171,10 @@
     <div class="output-box" id="outputBox">Belum ada data.</div>
     <div class="output-actions">
       <button class="btn btn-accent" id="btnCopy" style="height:34px;padding:0 14px;font-size:10px;" onclick="doCopy('outputBox')">Copy</button>
-        <button class="btn btn-gold" id="btnDownload" style="height:34px;padding:0 14px;font-size:10px;display:none;" onclick="doDownloadImage()">⬇ Download Gambar</button>
+      <button class="btn btn-gold" id="btnDownload" style="height:34px;padding:0 14px;font-size:10px;display:none;" onclick="doDownloadImage()">⬇ Download Gambar</button>
     </div>
   </div>
 </div>
-
 <div id="toast"></div>
 
 <script>
@@ -238,7 +202,7 @@ function toShio(pair) {
 }
 
 // ============================================================
-// HELPERS
+// HELPERS (ORIGINAL - UNCHANGED)
 // ============================================================
 function shuffle(a) {
   const arr = [...a];
@@ -314,6 +278,9 @@ function genAllValid(pool, len) {
   return shuffle(results);
 }
 
+// ============================================================
+// ORIGINAL buildList (used for 6D mode: 4D, 3D, 2D)
+// ============================================================
 function buildList(candidates, count) {
   const result = [];
   const usedNums = new Set();
@@ -340,6 +307,134 @@ function buildList(candidates, count) {
   return result;
 }
 
+// ============================================================
+// NEW buildList4D_5digit — Rule 6 Modified for 5D mode TOP 4D
+// ============================================================
+// RULE BARU:
+// - Setiap pair 2-digit (posisi 0-1, 1-2, 2-3) di angka 4D boleh muncul di MAX 2 angka.
+// - Jika pair sama di 2 angka, salah satu HARUS di posisi MID (pos 1-2),
+//   dan satunya di posisi FRONT (pos 0-1) atau BACK (pos 2-3).
+// - TIDAK BOLEH: pair sama di posisi yang sama di 2 angka.
+// - TIDAK BOLEH: pair sama di FRONT satu angka dan BACK angka lain.
+// - Harus ada gap minimal 1 angka (1 baris) antara kedua angka yang share pair.
+// - Digit dari banned set (result kemarin) TIDAK BOLEH muncul di output.
+// ============================================================
+function getPairPositions(num4d) {
+  // Kembalikan array [{pair, posIdx}] untuk semua 3 pasangan di 4D
+  return [
+    { pair: num4d[0]+num4d[1], posIdx: 0 }, // FRONT
+    { pair: num4d[1]+num4d[2], posIdx: 1 }, // MID
+    { pair: num4d[2]+num4d[3], posIdx: 2 }, // BACK
+  ];
+}
+
+function isValid4DNewRule(candidate, existingList) {
+  // existingList: array of angka 4D yang sudah ada
+  // Cek apakah candidate bisa masuk ke list dengan rule baru
+
+  const candPairs = getPairPositions(candidate);
+
+  for (const {pair: cPair, posIdx: cPos} of candPairs) {
+    // Kumpulkan semua kemunculan pair ini di existing list
+    const existingOccurrences = [];
+    for (let i = 0; i < existingList.length; i++) {
+      const exPairs = getPairPositions(existingList[i]);
+      for (const {pair: ePair, posIdx: ePos} of exPairs) {
+        if (ePair === cPair) {
+          existingOccurrences.push({ listIdx: i, posIdx: ePos, num: existingList[i] });
+        }
+      }
+    }
+
+    // Jika pair ini sudah muncul di 2 atau lebih angka di list → TOLAK
+    const uniqueNums = [...new Set(existingOccurrences.map(o => o.num))];
+    if (uniqueNums.length >= 2) return false;
+
+    if (uniqueNums.length === 1) {
+      // Ada 1 angka existing yang punya pair sama
+      const occInExisting = existingOccurrences.filter(o => o.num === uniqueNums[0]);
+
+      for (const { listIdx, posIdx: ePos } of occInExisting) {
+        // CEK: posisi sama → TOLAK
+        if (cPos === ePos) return false;
+
+        // CEK: FRONT vs BACK atau BACK vs FRONT → TOLAK
+        if ((cPos === 0 && ePos === 2) || (cPos === 2 && ePos === 0)) return false;
+
+        // CEK: harus salah satu MID dan satunya FRONT atau BACK
+        const hasMid = (cPos === 1 || ePos === 1);
+        const hasFrontOrBack = (cPos === 0 || cPos === 2 || ePos === 0 || ePos === 2);
+        if (!hasMid || !hasFrontOrBack) return false;
+
+        // CEK: gap minimal 1 baris (index candidate - index existing >= 2)
+        const gap = existingList.length - listIdx;
+        if (gap < 2) return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+function buildList4D_5digit(pool, bannedSet, count) {
+  // Generate 4D list untuk 5D mode dengan rule baru
+  // Banned check: tidak boleh ada digit dari bannedSet
+  const result = [];
+  const usedNums = new Set();
+  let attempts = 0;
+  const maxAttempts = 200000;
+
+  // Generate semua kandidat 4D valid (anti-asc, unik digit, tidak ada banned)
+  const allCandidates = [];
+  function perm(cur, rem) {
+    if (cur.length === 4) {
+      const s = cur.join('');
+      // Cek banned: tidak boleh ada digit dari bannedSet
+      for (const ch of s) {
+        if (bannedSet.has(ch)) return;
+      }
+      if (isValidNum(s)) allCandidates.push(s);
+      return;
+    }
+    for (const d of rem) {
+      if (bannedSet.has(d)) continue;
+      if (cur.length > 0 && parseInt(d) === parseInt(cur[cur.length-1])+1) continue;
+      perm([...cur, d], rem.filter(x => x !== d));
+    }
+  }
+  perm([], pool);
+  const candidates = shuffle(allCandidates);
+
+  // Backtracking dengan rule baru
+  function bt() {
+    if (result.length === count) return true;
+    for (const c of candidates) {
+      if (usedNums.has(c)) continue;
+      if (!isValid4DNewRule(c, result)) continue;
+      result.push(c);
+      usedNums.add(c);
+      if (bt()) return true;
+      result.pop();
+      usedNums.delete(c);
+      if (++attempts > maxAttempts) return false;
+    }
+    return false;
+  }
+
+  for (let attempt = 0; attempt < 50; attempt++) {
+    result.length = 0;
+    usedNums.clear();
+    attempts = 0;
+    shuffle(candidates);
+    if (bt()) return result;
+  }
+  // fallback: kembalikan yang sudah terkumpul
+  return result;
+}
+
+// ============================================================
+// ORIGINAL build2DGrid (unchanged)
+// ============================================================
 function build2DGrid(candidates) {
   for (let attempt = 0; attempt < 60; attempt++) {
     const pool = shuffle([...candidates]);
@@ -389,9 +484,6 @@ function build2DGrid(candidates) {
   return shuffle([...candidates]).slice(0, 12);
 }
 
-// ============================================================
-// SHUFFLE NO ASC PAIR (for BBFS display)
-// ============================================================
 function shuffleNoAsc(arr) {
   let result = shuffle([...arr]);
   for (let t = 0; t < 10000; t++) {
@@ -401,9 +493,6 @@ function shuffleNoAsc(arr) {
   return result;
 }
 
-// ============================================================
-// KOITOTO NAME MAPPING
-// ============================================================
 const KOITOTO_NAME = {
   "CAMBODIA": "CAMBODIA", "BULLSEYE": "BULLSEYE", "SYDNEY": "SYDNEY",
   "CHINA": "CHINA", "JEPANG": "JEPANG", "SINGAPORE": "SINGAPORE",
@@ -429,44 +518,39 @@ function build(mainInput) {
   const cands3D = genAllValid(pool, 3);
   const cands2D = genAllValid(pool, 2);
 
-  // WEB KECIL: 4 × 4D, 6 × 3D, 12 × 2D
+  // 6D MODE: original logic (unchanged)
   const fourD  = buildList(cands4D, 4);
   const threeD = buildList(cands3D, 6);
   const twoD   = build2DGrid(cands2D);
   const twoD1  = twoD.slice(0, 6);
   const twoD2  = twoD.slice(6, 12);
 
-  // KOITOTO: 6 × 4D, 7 × 3D, 9 × 2D (re-generate fresh candidates)
-  const fourD_k  = buildList(genAllValid(pool, 4), 6);
+  // 5D MODE: 4D pakai rule baru, 3D & 2D tetap original
+  // pool digit untuk 5D: sama (6 dari sisa)
+  // bannedSet dipakai untuk double-check tidak ada bocoran
+  const fourD_k  = buildList4D_5digit(pool, bannedSet, 6);
   const threeD_k = buildList(genAllValid(pool, 3), 7);
   const twoD_k   = buildList(genAllValid(pool, 2), 9);
 
-  // BBFS: 6 digits no asc
   const bbfsDigits = shuffleNoAsc([...pool]);
   const bbfs = `✹ ${bbfsDigits.join(' ')} ✹`;
 
-  // ANGKA MAIN KOITOTO: 5 digits — no asc pair as full string
   let angkaMain5 = shuffle([...pool]).slice(0, 5);
   for (let t = 0; t < 10000; t++) {
     if (!hasAscPair(angkaMain5.join(''))) break;
     angkaMain5 = shuffle([...pool]).slice(0, 5);
   }
 
-  // COLOK BEBAS: 2 single digits from pool, different, no asc between them
   let cb1 = angkaMain5[4], cb2 = angkaMain5[3];
   if (parseInt(cb2) === parseInt(cb1) + 1) { cb1 = angkaMain5[3]; cb2 = angkaMain5[4]; }
   const colokBebas = `${cb1} / ${cb2}`;
 
-  // COLOK 2D: 2 pairs, no asc within each pair, cross-rule if shared digit
-  // Use pos[0]+pos[3] and pos[1]+pos[2] from angkaMain5
   let p1a = angkaMain5[0], p1b = angkaMain5[3];
   let p2a = angkaMain5[1], p2b = angkaMain5[2];
-  // fix asc within each pair
   if (parseInt(p1b) === parseInt(p1a) + 1) [p1a, p1b] = [p1b, p1a];
   if (parseInt(p2b) === parseInt(p2a) + 1) [p2a, p2b] = [p2b, p2a];
   const colok2D = `${p1a}${p1b} / ${p2a}${p2b}`;
 
-  // CB, TWIN (Web Kecil)
   const cb2_pairs = [
     bbfsDigits[0]+bbfsDigits[1],
     bbfsDigits[2]+bbfsDigits[3],
@@ -475,12 +559,10 @@ function build(mainInput) {
   const cb   = cb2_pairs.map(p => p[0]);
   const twin = cb.map(c => c+c);
 
-  // SHIO
   const sh1 = toShio(bbfsDigits[0]+bbfsDigits[1]);
   const sh2 = toShio(bbfsDigits[3]+bbfsDigits[4]);
   const shioJitu = toShio(angkaMain5[3]+angkaMain5[4]);
 
-  // GET UI values
   const G = id => document.getElementById(id).value;
   const predName = G('prediksiName');
   const dayName  = G('dayName');
@@ -490,7 +572,6 @@ function build(mainInput) {
   const year     = G('year');
   const kName    = KOITOTO_NAME[predName] || predName;
 
-  // ---- 6 DIGIT FORMAT (Nustoto / Kikototo / Keytoto) ----
   function make6D(siteName) {
     let out = `PREDIKSI ${kName} ${siteName.toUpperCase()} ${day} ${monthUP} ${year}\n\n`;
     out += `BBFS   : ${bbfs}\n\n`;
@@ -507,7 +588,6 @@ function build(mainInput) {
     return out;
   }
 
-  // ---- 5 DIGIT FORMAT (Koitoto / Omacuan) ----
   function make5D(siteName) {
     let out = `PREDIKSI ${kName} ${siteName.toUpperCase()} ${day} ${monthUP} ${year}\n\n`;
     out += `ANGKA MAIN  : ✹ ${angkaMain5.join('')} ✹\n\n`;
@@ -531,7 +611,7 @@ function build(mainInput) {
 }
 
 // ============================================================
-// UI
+// UI (ORIGINAL - UNCHANGED)
 // ============================================================
 let lastResult = null;
 

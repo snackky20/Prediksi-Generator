@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -370,12 +371,14 @@ function getPairPositions(num) {
 }
 
 function isValid4DNewRule(candidate, existingList) {
-  // Ambil posisi pair kandidat saat ini
   const cPairs = [
     { pair: candidate[0] + candidate[1], pos: 'FRONT' },
     { pair: candidate[1] + candidate[2], pos: 'MID' },
     { pair: candidate[2] + candidate[3], pos: 'BACK' }
   ];
+
+  // Registry internal untuk mencatat semua pair yang saling silang posisi
+  const crossPairsRegistry = new Set();
 
   for (const cItem of cPairs) {
     for (let i = 0; i < existingList.length; i++) {
@@ -391,12 +394,12 @@ function isValid4DNewRule(candidate, existingList) {
           // 1. TIDAK BOLEH: pair sama di posisi yang sama
           if (cItem.pos === exItem.pos) return false;
 
-          // 2. TIDAK BOLEH: pair sama di FRONT satu angka dan BACK di angka lain
+          // 2. TIDAK BOLEH: pair sama di FRONT vs BACK atau sebaliknya
           if ((cItem.pos === 'FRONT' && exItem.pos === 'BACK') || (cItem.pos === 'BACK' && exItem.pos === 'FRONT')) {
             return false;
           }
 
-          // 3. WAJIB: Salah satu harus di posisi MID, dan satunya di FRONT atau BACK
+          // 3. WAJIB: Salah satu harus MID, satunya FRONT atau BACK
           const validCombo = (cItem.pos === 'MID' && (exItem.pos === 'FRONT' || exItem.pos === 'BACK')) ||
                              (exItem.pos === 'MID' && (cItem.pos === 'FRONT' || cItem.pos === 'BACK'));
           if (!validCombo) return false;
@@ -404,10 +407,40 @@ function isValid4DNewRule(candidate, existingList) {
           // 4. WAJIB: Harus ada gap minimal 1 baris (selisih index minimal 2)
           const gap = existingList.length - i;
           if (gap < 2) return false;
+
+          // Catat pair yang bentrok posisi ini
+          crossPairsRegistry.add(cItem.pair);
         }
       }
     }
   }
+
+  // Hitung ulang akumulasi cross pair dari baris-baris existing yang sudah masuk list
+  for (let i = 0; i < existingList.length; i++) {
+    const p1 = [
+      existingList[i][0]+existingList[i][1],
+      existingList[i][1]+existingList[i][2],
+      existingList[i][2]+existingList[i][3]
+    ];
+    for (let j = i + 1; j < existingList.length; j++) {
+      const p2 = [
+        existingList[j][0]+existingList[j][1],
+        existingList[j][1]+existingList[j][2],
+        existingList[j][2]+existingList[j][3]
+      ];
+      for (const pair1 of p1) {
+        if (p2.includes(pair1)) {
+          crossPairsRegistry.add(pair1);
+        }
+      }
+    }
+  }
+
+  // KUNCI AMAN: Maksimal hanya boleh ada 2 jenis pair unik yang mengalami kembar posisi silang!
+  if (crossPairsRegistry.size > 2) {
+    return false;
+  }
+
   return true;
 }
 
@@ -633,22 +666,30 @@ function build(mainInput) {
   const year     = G('year');
   const kName    = KOITOTO_NAME[predName] || predName;
 
-  function make6D(siteName) {
-    let out = `PREDIKSI ${kName} ${siteName.toUpperCase()} ${day} ${monthUP} ${year}\n\n`;
-    out += `BBFS   : ${bbfs}\n\n`;
-    out += `4D     : ✹ ${fourD.join(' - ')} ✹\n\n`;
-    out += `3D     : ✹ ${threeD.join(' - ')} ✹\n\n`;
+function make6D(siteName) {
+    // Memformat BBFS menjadi pola: 5 Digit awal + 1 Digit terakhir
+    const bbfsFormatted = `✹ ${bbfsDigits.slice(0, 5).join(' ')} + ${bbfsDigits[5]} ✹`;
+    
+    // Membagi 3D menjadi 2 baris (masing-masing 3 kelompok angka)
+    const threeD_row1 = threeD.slice(0, 3).join(' - ');
+    const threeD_row2 = threeD.slice(3, 6).join(' - ');
+
+    let out = `PREDIKSI TOGEL ${kName} ${day} ${monthUP} ${year}\n`;
+    out += `${mainInput}\n\n`; // Menampilkan angka result kemarin tepat di bawah judul
+    out += `BBFS : ${bbfsFormatted}\n\n`;
+    out += `4D : ✹  ${fourD.join(' - ')} ✹\n                                                   \n`;
+    out += `3D : ✹ ${threeD_row1} ✹\n`;
+    out += `        ✹ ${threeD_row2} ✹\n   \n`;
     out += `⇓ ANGKA TOP 2D 12 LINE (BB) ⇓\n\n`;
     out += `✪ ${twoD1.join(' - ')} ✪\n\n`;
     out += `✪ ${twoD2.join(' - ')} ✪\n\n`;
-    out += `CB 2D  : ✪ ${cb2_pairs.join(' - ')} ✪\n\n`;
-    out += `CB     : ✹ ${cb.join(' - ')} ✹\n\n`;
-    out += `TWIN   : ✪ ${twin.join(' - ')} ✪\n\n`;
-    out += `Shio   : ✪ ${sh1} - ${sh2} ✪\n\n`;
+    out += `CB 2D : ✪ ${cb2_pairs.join(' - ')} ✪\n\n`;
+    out += `CB : ✹ ${cb.join(' - ')} ✹  \n\n`;
+    out += `TWIN : ✪ ${twin.join(' - ')} ✪\n\n`;
+    out += `Shio : ✪ ${sh1} - ${sh2} ✪\n\n`;
     out += `Selalu Utamakan Prediksi Sendiri (UPS)`;
     return out;
   }
-
   function make5D(siteName) {
     let out = `PREDIKSI ${kName} ${siteName.toUpperCase()} ${day} ${monthUP} ${year}\n\n`;
     out += `ANGKA MAIN  : ✹ ${angkaMain5.join('')} ✹\n\n`;
